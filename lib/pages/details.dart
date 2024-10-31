@@ -68,7 +68,7 @@ class Details extends StatelessWidget {
                       child: Text(
                         "В корзину!",
                         style: TextStyle(
-                          color: Colors.grey[800],
+                          color: Colors.white,
                           fontSize: MediaQuery.of(context).size.height * 0.03,
                           fontWeight: FontWeight.bold,
                         ),

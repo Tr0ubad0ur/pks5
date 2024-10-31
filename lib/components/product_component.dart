@@ -41,13 +41,6 @@ class ProductComponent extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFFFFFFFF)),
                 ),
-                Text(
-                  truncateString(product.description, 70),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.height * 0.025,
-                      color: const Color(0xFFFFFFFF)),
-                ),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -58,9 +51,7 @@ class ProductComponent extends StatelessWidget {
                         width: MediaQuery.of(context).size.height * 0.12,
                         height: MediaQuery.of(context).size.height * 0.05,
                         alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: const Color(0xFF800000),
-                            borderRadius: BorderRadius.circular(5.0)),
+
                         child: Text(
                           "${product.price} р",
                           style: TextStyle(
