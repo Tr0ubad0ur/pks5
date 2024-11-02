@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Вишняков Матвей ЭФБО-04-22',
       theme: ThemeData(
       ),
-      home: const Home(),
+      home: const ProductListScreen(),
     );
   }
 }
