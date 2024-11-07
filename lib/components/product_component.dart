@@ -61,13 +61,13 @@ class _ProductComponentState extends State<ProductComponent> {
                 ),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Container(
                     padding: const EdgeInsets.all(1),
                     margin: const EdgeInsets.only(right: 10, top: 10),
-                    width: MediaQuery.of(context).size.height * 0.12,
+                    width: MediaQuery.of(context).size.height * 0.15,
                     height: MediaQuery.of(context).size.height * 0.05,
                     alignment: Alignment.center,
                     child: Text(

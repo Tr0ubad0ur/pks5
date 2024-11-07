@@ -15,6 +15,13 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
+  @override
+  void initState() {
+    super.initState();
+    products.addAll(dataProducts);
+  }
+
+
   void navigateToAddProductPage(BuildContext context) async{
     final Product result = await Navigator.push(context,
       MaterialPageRoute(builder: (context) => const AddProductPage()),
@@ -32,7 +39,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: const Color.fromRGBO(102, 155, 188, 1),
+          backgroundColor: const Color(0xFF800000),
           title: const Text('Подтверждение удаления'),
           content: const Text('Вы уверены, что хотите удалить этот интсрумент?'),
           actions: <Widget>[
@@ -76,7 +83,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
         ),
       ),
       body: products.isEmpty
-          ? const Center(child: Text("Нет добавленных инструментов", style: TextStyle(color: Color.fromRGBO(102, 155, 188, 1), fontSize: 18),),)
+          ? const Center(child: Text("Нет добавленных инструментов", style: TextStyle(color: const Color(0xFF800000), fontSize: 18),),)
           : ListView.builder(
           itemCount: products.length,
           itemBuilder: (context, index){
@@ -84,7 +91,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
           }
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromRGBO(233, 79, 55, 1),
+        backgroundColor: const Color(0xFF800000),
         onPressed: () => navigateToAddProductPage(context),
         child: Icon(Icons.add_box_sharp),
         tooltip: "Добавить инструмент",

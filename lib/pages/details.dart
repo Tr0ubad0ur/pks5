@@ -52,7 +52,7 @@ class Details extends StatelessWidget {
                         borderRadius: BorderRadius.circular(5.0),
                       ),
                       child: Text(
-                        "${product.price} р",
+                        "${product.price}₽",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: MediaQuery.of(context).size.height * 0.03,
