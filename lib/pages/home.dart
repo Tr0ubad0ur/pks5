@@ -1,100 +1,82 @@
-import 'package:pr3/data/data.dart';
 import 'package:flutter/material.dart';
 import 'package:pr3/components/product_component.dart';
 import 'package:pr3/models/product.dart';
 import 'package:pr3/pages/addProductPage.dart';
-
+import 'package:pr3/data/data.dart';
 
 final List<Product> products = <Product>[];
 
-class ProductListScreen extends StatefulWidget {
-  const ProductListScreen({super.key});
+class HomePage extends StatefulWidget {
+  final Function(int) removeProduct;
+  final Function(int) toggleFavorite;
+  final Function(int) addToCart;
+
+  const HomePage({
+    super.key,
+    required this.removeProduct,
+    required this.toggleFavorite,
+    required this.addToCart,
+  });
 
   @override
-  State<ProductListScreen> createState() => _ProductListScreenState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _ProductListScreenState extends State<ProductListScreen> {
-  @override
-  void initState() {
-    super.initState();
-    products.addAll(dataProducts);
-  }
-
-
-  void navigateToAddProductPage(BuildContext context) async{
-    final Product result = await Navigator.push(context,
+class _HomePageState extends State<HomePage> {
+  void navigateToAddProductPage(BuildContext context) async {
+    final Product result = await Navigator.push(
+      context,
       MaterialPageRoute(builder: (context) => const AddProductPage()),
     );
 
-    if (result != null){
+    if (result != null) {
       setState(() {
-        products.add(result);
+        entries.add(result);
       });
     }
   }
-
-  void removeProduct(int index) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: const Color(0xFF800000),
-          title: const Text('Подтверждение удаления'),
-          content: const Text('Вы уверены, что хотите удалить этот интсрумент?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Отмена',
-                style: TextStyle(color: Colors.black),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Удалить',
-                style: TextStyle(color: Colors.black),
-              ),
-              onPressed: () {
-                setState(() {
-                  products.removeAt(index);
-                });
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF800000),
         title: const Center(
-            child: Text('Troubadour`s')
+          child: Text(
+            'Troubadour`s',
+            style: TextStyle(color: Colors.white, fontSize: 40),
+          ),
         ),
-        titleTextStyle: const TextStyle(
-          fontSize: 24,
-          color: Color(0xFFFFFFFF),
-        ),
+        backgroundColor: const Color.fromRGBO(161, 13, 1, 1),
       ),
-      body: products.isEmpty
-          ? const Center(child: Text("Нет добавленных инструментов", style: TextStyle(color: const Color(0xFF800000), fontSize: 18),),)
-          : ListView.builder(
-          itemCount: products.length,
-          itemBuilder: (context, index){
-            return ProductComponent(product: products[index], index: index, removeProduct: removeProduct,);
-          }
+      backgroundColor: Colors.white,
+      body: entries.isEmpty
+          ? const Center(
+        child: Text(
+          "Нет добавленных товаров",
+          style: TextStyle(color: Color.fromRGBO(161, 13, 1, 1), fontSize: 18),
+        ),
+      )
+          : GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.62,
+        ),
+        itemCount: entries.length,
+        itemBuilder: (context, index) {
+          return StoreItem(
+            product: entries[index],
+            index: index,
+            toggleFavorite: widget.toggleFavorite,
+            removeProduct: widget.removeProduct,
+            addToCart: widget.addToCart,
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF800000),
+        backgroundColor: const Color.fromRGBO(161, 13, 1, 1),
         onPressed: () => navigateToAddProductPage(context),
-        child: Icon(Icons.add_box_sharp),
-        tooltip: "Добавить инструмент",
+        tooltip: "Добавить товар",
+        child: const Icon(Icons.add_box_sharp),
       ),
     );
   }

@@ -1,91 +1,76 @@
 import 'package:flutter/material.dart';
-import 'package:pr3/pages/details.dart';
 import 'package:pr3/models/product.dart';
-import 'package:pr3/util/string_utils.dart';
+import 'package:pr3/pages/details.dart';
 
-class ProductComponent extends StatefulWidget {
+class StoreItem extends StatelessWidget {
   final Product product;
   final int index;
+  final Function(int) toggleFavorite;
   final Function(int) removeProduct;
+  final Function(int) addToCart;
 
-  const ProductComponent({
+  const StoreItem({
     super.key,
     required this.product,
     required this.index,
+    required this.toggleFavorite,
     required this.removeProduct,
+    required this.addToCart,
   });
 
   @override
-  _ProductComponentState createState() => _ProductComponentState();
-}
-
-class _ProductComponentState extends State<ProductComponent> {
-  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTap: () => Navigator.push(
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Details(product: widget.product)),
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          margin: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width * 0.05,
-            right: MediaQuery.of(context).size.width * 0.05,
+          MaterialPageRoute(
+            builder: (context) => ItemPage(
+              product: product,
+              index: index,
+              toggleFavorite: toggleFavorite,
+              removeProduct: removeProduct,
+              addToCart: addToCart,
+            ),
           ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
           decoration: BoxDecoration(
-            color: Colors.black,
-            borderRadius: BorderRadius.circular(5.0),
+            borderRadius: BorderRadius.circular(16.0),
+            color: const Color.fromRGBO(34, 34, 36, 1),
           ),
           width: double.infinity,
+          height: MediaQuery.of(context).size.height * 0.7,
           child: Column(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(5.0),
-                child: Image(
-                  image: AssetImage(widget.product.photo),
-                  height: MediaQuery.of(context).size.width * 0.9,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  fit: BoxFit.cover,
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Text(
+                    product.title,
+                    style: const TextStyle(color: Color.fromRGBO(246, 247, 235, 1), fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
-              Text(
-                widget.product.title,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.height * 0.03,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFFFFFFFF),
-                ),
+              Image.asset(
+                product.photo,
+                height: 160,
+                width: 150,
+                fit: BoxFit.cover,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(1),
-                    margin: const EdgeInsets.only(right: 10, top: 10),
-                    width: MediaQuery.of(context).size.height * 0.15,
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "${widget.product.price}₽",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: MediaQuery.of(context).size.height * 0.03,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline),
-                    onPressed: () {
-                      widget.removeProduct(widget.index);
-                    },
-                  ),
-                ],
+
+              IconButton(
+                icon: Icon(
+                  product.isFavorite ? Icons.favorite : Icons.favorite_border,
+                  color: const Color.fromRGBO(161, 13, 1, 1),
+                ),
+                onPressed: () {
+                  toggleFavorite(index);
+                },
               ),
             ],
           ),

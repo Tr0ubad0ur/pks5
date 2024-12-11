@@ -102,7 +102,7 @@ class _AddProductPageState extends State<AddProductPage> {
                 style: const TextStyle(color: Color(0xFFFFFFFF)),
               ),
               const SizedBox(height: 16),
-              if (photoController.text.isNotEmpty) // Проверка, что ссылка на фото введена
+              if (photoController.text.isNotEmpty)
                 Image.network(
                   photoController.text,
                   height: 200,
@@ -152,7 +152,7 @@ class _AddProductPageState extends State<AddProductPage> {
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF800000),
-                  foregroundColor: Colors.black87,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
