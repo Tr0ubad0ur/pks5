@@ -1,76 +1,106 @@
 import 'package:flutter/material.dart';
+import 'package:pr3/api/api.dart';
 import 'package:pr3/models/product.dart';
+import 'package:pr3/models/productManager.dart';
 import 'package:pr3/pages/details.dart';
+import 'package:pr3/models/favoriteManager.dart';
+import 'package:provider/provider.dart';
 
-class StoreItem extends StatelessWidget {
+class ProductItem extends StatefulWidget {
   final Product product;
   final int index;
-  final Function(int) toggleFavorite;
-  final Function(int) removeProduct;
-  final Function(int) addToCart;
 
-  const StoreItem({
-    super.key,
-    required this.product,
-    required this.index,
-    required this.toggleFavorite,
-    required this.removeProduct,
-    required this.addToCart,
-  });
+  const ProductItem({super.key, required this.product, required this.index});
+
+  @override
+  _ProductItemState createState() => _ProductItemState(product: product);
+}
+
+class _ProductItemState extends State<ProductItem> {
+  final Product product;
+  _ProductItemState({required this.product}) : super();
+
+  late Future<List<Product>> _products;
+
+  @override
+  void initState() {
+    super.initState();
+    _products = ApiService().getProducts();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
+    final favoriteManager = Provider.of<FavoriteManager>(context);
+
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: GestureDetector(
+        onTap: () => Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => ItemPage(
-              product: product,
-              index: index,
-              toggleFavorite: toggleFavorite,
-              removeProduct: removeProduct,
-              addToCart: addToCart,
-            ),
-          ),
-        );
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+          MaterialPageRoute(builder: (context) => ProductPage(product: widget.product)),
+        ),
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.0),
-            color: const Color.fromRGBO(34, 34, 36, 1),
+            borderRadius: BorderRadius.circular(16),
+            color: const Color.fromARGB(45, 237, 231, 246),
           ),
           width: double.infinity,
-          height: MediaQuery.of(context).size.height * 0.7,
-          child: Column(
+          height: MediaQuery.of(context).size.height * 0.8,
+          child: Stack(
             children: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Text(
-                    product.title,
-                    style: const TextStyle(color: Color.fromRGBO(246, 247, 235, 1), fontSize: 18),
-                    textAlign: TextAlign.center,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16.0),
+                      child: Image.network(
+                        widget.product.productImage,
+                        height: 180, // Уменьшенная высота изображения
+                        width: 180, // Уменьшенная ширина изображения
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                ),
+                  // Поменяли местами цену и название
+                  Center(
+                    child: Text(
+                      widget.product.productName,
+                      style: const TextStyle(
+                        fontSize: 14,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      '${widget.product.productPrice}₽',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              Image.asset(
-                product.photo,
-                height: 160,
-                width: 150,
-                fit: BoxFit.cover,
-              ),
-
-              IconButton(
-                icon: Icon(
-                  product.isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: const Color.fromRGBO(161, 13, 1, 1),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: IconButton(
+                  icon: Icon(
+                    favoriteManager.isFavorite(product) ? Icons.favorite : Icons.favorite_border,
+                    color: favoriteManager.isFavorite(product) ? const Color.fromRGBO(161, 13, 1, 1) : Colors.grey,
+                  ),
+                  onPressed: () {
+                    if (favoriteManager.isFavorite(product)) {
+                      favoriteManager.removeFromFavorite(product);
+                    } else {
+                      favoriteManager.addToFavorite(product);
+                    }
+                  },
                 ),
-                onPressed: () {
-                  toggleFavorite(index);
-                },
               ),
             ],
           ),

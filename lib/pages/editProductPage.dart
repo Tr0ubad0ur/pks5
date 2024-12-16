@@ -3,19 +3,32 @@ import 'package:pr3/models/product.dart';
 import 'package:provider/provider.dart';
 import 'package:pr3/models/productManager.dart';
 
-class AddProductPage extends StatefulWidget {
-  const AddProductPage({super.key});
+class EditProductPage extends StatefulWidget {
+  final Product product;
+
+  const EditProductPage({super.key, required this.product});
 
   @override
-  State<AddProductPage> createState() => _AddProductPageState();
+  State<EditProductPage> createState() => _EditProductPageState();
 }
 
-class _AddProductPageState extends State<AddProductPage> {
+class _EditProductPageState extends State<EditProductPage> {
   final TextEditingController productTitleController = TextEditingController();
   final TextEditingController productImageController = TextEditingController();
   final TextEditingController productPriceController = TextEditingController();
   final TextEditingController productAboutController = TextEditingController();
   final TextEditingController productSpecificationController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Заполняем контроллеры данными из текущего продукта
+    productTitleController.text = widget.product.productTitle;
+    productImageController.text = widget.product.productImage;
+    productPriceController.text = widget.product.productPrice.toString();
+    productAboutController.text = widget.product.productAbout;
+    productSpecificationController.text = widget.product.productSpecifications;
+  }
 
   @override
   void dispose() {
@@ -27,7 +40,7 @@ class _AddProductPageState extends State<AddProductPage> {
     super.dispose();
   }
 
-  Future<void> _createProduct(BuildContext context) async {
+  Future<void> _updateProduct(BuildContext context) async {
     final productTitle = productTitleController.text;
     final productImage = productImageController.text;
     final productPrice = int.tryParse(productPriceController.text) ?? 0;
@@ -35,18 +48,18 @@ class _AddProductPageState extends State<AddProductPage> {
     final productSpecifications = productSpecificationController.text;
 
     if (productTitle.isNotEmpty && productImage.isNotEmpty && productPrice > 0 && productAbout.isNotEmpty && productSpecifications.isNotEmpty) {
-      final newProduct = Product(
-        productId: 0, // ID будет назначен на сервере
+      final updatedProduct = Product(
+        productId: widget.product.productId, // ID остается прежним
         productTitle: productTitle,
         productImage: productImage,
-        productName: productTitle,
+        productName: productTitle, // Предположим, что название и имя совпадают
         productPrice: productPrice,
         productAbout: productAbout,
         productSpecifications: productSpecifications,
       );
 
       final productManager = Provider.of<ProductManager>(context, listen: false);
-      await productManager.addProduct(newProduct); // Добавляем продукт через API
+      await productManager.updateProduct(widget.product.productId, updatedProduct); // Обновляем продукт через API
 
       Navigator.pop(context); // Возвращаемся на предыдущую страницу
     } else {
@@ -62,7 +75,7 @@ class _AddProductPageState extends State<AddProductPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Добавление товара"),
+        title: const Text("Редактирование товара"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -130,10 +143,10 @@ class _AddProductPageState extends State<AddProductPage> {
               ),
               const SizedBox(height: 16),
 
-              // Кнопка перехода к методу создания экземпляра класса Product
+              // Кнопка для сохранения изменений
               ElevatedButton(
-                onPressed: () => _createProduct(context),
-                child: const Text("Добавить товар",
+                onPressed: () => _updateProduct(context),
+                child: const Text("Сохранить изменения",
                   style: TextStyle(
                     fontSize: 20,
                   ),

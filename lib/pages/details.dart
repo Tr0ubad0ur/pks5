@@ -1,152 +1,170 @@
 import 'package:flutter/material.dart';
 import 'package:pr3/models/product.dart';
+import 'package:pr3/models/favoriteManager.dart';
+import 'package:provider/provider.dart';
+import 'package:pr3/models/cartManager.dart';
+import 'package:badges/badges.dart' as badges;
+import 'package:pr3/models/productManager.dart';
+import 'package:pr3/pages/editProductPage.dart';
 
-class ItemPage extends StatefulWidget {
+class ProductPage extends StatefulWidget {
   final Product product;
-  final int index;
-  final Function(int) toggleFavorite;
-  final Function(int) addToCart;
-  final Function(int) removeProduct;
 
-  const ItemPage({
-    super.key,
-    required this.product,
-    required this.index,
-    required this.toggleFavorite,
-    required this.addToCart,
-    required this.removeProduct,
-  });
+  const ProductPage({super.key, required this.product});
 
   @override
-  _ItemPageState createState() => _ItemPageState();
+  State<ProductPage> createState() => _ProductPageState();
 }
 
-class _ItemPageState extends State<ItemPage> {
-  bool isFavorite = false;
-
-  @override
-  void initState() {
-    super.initState();
-    isFavorite = widget.product.isFavorite;
-  }
-
-  void _showDeleteConfirmationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: const Color.fromRGBO(161, 13, 1, 1),
-          title: const Text('Подтверждение удаления'),
-          content: const Text('Вы уверены, что хотите удалить этот товар?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Отмена', style: TextStyle(color: Colors.black)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Удалить', style: TextStyle(color: Colors.black)),
-              onPressed: () {
-                widget.removeProduct(widget.index);
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _toggleFavorite() {
-    setState(() {
-      isFavorite = !isFavorite;
-      widget.toggleFavorite(widget.index);
-    });
-  }
-
+class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
+    final favoriteManager = Provider.of<FavoriteManager>(context);
+    final cartManager = Provider.of<CartManager>(context);
+    final productManager = Provider.of<ProductManager>(context);
+
     return Scaffold(
+      backgroundColor: Colors.white, // Фон всего экрана
       appBar: AppBar(
-        title: Text(widget.product.title),
-        titleTextStyle: const TextStyle(
-          color: Colors.white,
-          fontSize: 28,
-        ),
-        backgroundColor: const Color.fromRGBO(161, 13, 1, 1),
-        actions: [
+        title: Text(widget.product.productTitle),
+        actions: <Widget>[
           IconButton(
             icon: Icon(
-              isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: Colors.white,
+              favoriteManager.isFavorite(widget.product) ? Icons.favorite : Icons.favorite_border,
+              color: favoriteManager.isFavorite(widget.product) ? const Color.fromRGBO(161, 13, 1, 1) : Colors.black,
             ),
-            onPressed: _toggleFavorite,
+            onPressed: () {
+              if (favoriteManager.isFavorite(widget.product)) {
+                favoriteManager.removeFromFavorite(widget.product);
+              } else {
+                favoriteManager.addToFavorite(widget.product);
+              }
+            },
           ),
           IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            color: Colors.white,
+            icon: const Icon(Icons.delete_outline),
+            onPressed: () async {
+              await productManager.removeProduct(widget.product.productId);
+              Navigator.pop(context);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.edit),
             onPressed: () {
-              widget.addToCart(widget.index);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Товар добавлен в корзину'),
-                  duration: Duration(seconds: 2),
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditProductPage(product: widget.product),
                 ),
               );
             },
           ),
         ],
+        backgroundColor: const Color.fromRGBO(161, 13, 1, 1),
       ),
-      backgroundColor: Colors.white,
       body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Image.network(
+              widget.product.productImage,
+              height: MediaQuery.of(context).size.height * 0.6,
+              width: MediaQuery.of(context).size.width * 1,
+              fit: BoxFit.fill,
+            ),
+            Center(
+              child: Text(
+                widget.product.productName,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Center(
+              child: Text(
+                '${widget.product.productPrice}₽',
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Center(
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    const TextSpan(
+                      text: "Описание:\n",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: widget.product.productAbout,
+                      style: const TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Center(
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    const TextSpan(
+                      text: "Характеристики:\n",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: widget.product.productSpecifications,
+                      style: const TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white, // Фон нижней панели
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
+          padding: const EdgeInsets.only(bottom: 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end, // Выравнивание по правому краю
             children: [
-              Image.asset(
-                widget.product.photo,
-                height: 300,
-                width: 300,
-                fit: BoxFit.cover,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                widget.product.title,
-                style: const TextStyle(color: Colors.black87, fontSize: 24),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                '${widget.product.price}₽',
-                style: const TextStyle(color: Colors.black87, fontSize: 20),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                widget.product.description,
-                style: const TextStyle(color: Colors.black87, fontSize: 16),
-              ),
-              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  _showDeleteConfirmationDialog(context);
+                  cartManager.addToCart(widget.product);
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(161, 13, 1, 1),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                child: const Text("В корзину"),
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
-                  minimumSize: const Size(300, 50),
-                ),
-                child: const Text(
-                  "Удалить товар",
-                  style: TextStyle(
-                    fontSize: 20,
+                  padding: MaterialStateProperty.all(const EdgeInsets.all(14)),
+                  backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(161, 13, 1, 1)),
+                  foregroundColor: MaterialStateProperty.all(Colors.white),
+                  textStyle: MaterialStateProperty.all(
+                    const TextStyle(
+                      fontSize: 23,
+                    ),
                   ),
                 ),
               ),
+              const SizedBox(width: 16), // Отступ справа (если нужно)
             ],
           ),
         ),
