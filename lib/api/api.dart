@@ -4,7 +4,6 @@ import 'package:pr3/models/product.dart';
 class ApiService {
   final Dio _dio = Dio();
 
-  // Получение списка продуктов
   Future<List<Product>> getProducts() async {
     try {
       final response = await _dio.get('http://172.20.10.2:8080/products');
@@ -21,7 +20,6 @@ class ApiService {
     }
   }
 
-  // Получение продукта по ID
   Future<Product> getProductById(int id) async {
     try {
       final response = await _dio.get('http://172.20.10.2:8080/products/$id');
@@ -35,7 +33,6 @@ class ApiService {
     }
   }
 
-  // Создание нового продукта
   Future<Product> createProduct(Product product) async {
     try {
       final response = await _dio.post(
@@ -52,7 +49,6 @@ class ApiService {
     }
   }
 
-  // Обновление продукта
   Future<Product> updateProduct(int id, Product product) async {
     try {
       final response = await _dio.put(
@@ -69,7 +65,6 @@ class ApiService {
     }
   }
 
-  // Удаление продукта
   Future<void> deleteProduct(int id) async {
     try {
       final response = await _dio.delete('http://172.20.10.2:8080/products/delete/$id');

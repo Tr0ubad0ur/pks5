@@ -33,8 +33,8 @@ class _CartProductState extends State<CartProduct> {
                   borderRadius: BorderRadius.circular(16.0),
                   child: Image.network(
                     widget.product.productImage,
-                    height: 140, // Уменьшенная высота изображения
-                    width: 140, // Уменьшенная ширина изображения
+                    height: 140,
+                    width: 140,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -63,7 +63,6 @@ class _CartProductState extends State<CartProduct> {
               ),
             ],
           ),
-            // Кнопки для изменения количества товара
             Positioned(
               bottom: 0,
               left: 165,
@@ -96,7 +95,6 @@ class _CartProductState extends State<CartProduct> {
                 ],
               ),
             ),
-            // Кнопка для удаления товара из корзины
             Positioned(
               bottom: 0,
               left: 300,

@@ -36,7 +36,7 @@ class _AddProductPageState extends State<AddProductPage> {
 
     if (productTitle.isNotEmpty && productImage.isNotEmpty && productPrice > 0 && productAbout.isNotEmpty && productSpecifications.isNotEmpty) {
       final newProduct = Product(
-        productId: 0, // ID будет назначен на сервере
+        productId: 0,
         productTitle: productTitle,
         productImage: productImage,
         productName: productTitle,
@@ -46,9 +46,9 @@ class _AddProductPageState extends State<AddProductPage> {
       );
 
       final productManager = Provider.of<ProductManager>(context, listen: false);
-      await productManager.addProduct(newProduct); // Добавляем продукт через API
+      await productManager.addProduct(newProduct);
 
-      Navigator.pop(context); // Возвращаемся на предыдущую страницу
+      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -130,7 +130,7 @@ class _AddProductPageState extends State<AddProductPage> {
               ),
               const SizedBox(height: 16),
 
-              // Кнопка перехода к методу создания экземпляра класса Product
+
               ElevatedButton(
                 onPressed: () => _createProduct(context),
                 child: const Text("Добавить товар",

@@ -32,10 +32,10 @@ class _FavPageState extends State<FavPage> {
       ),
       body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // количество элементов в сетке
-          crossAxisSpacing: 2.0, // расстояние между столбцами
-          mainAxisSpacing: 2.0, // расстояние между строками
-          childAspectRatio: 0.76, // соотношение сторон элементов
+          crossAxisCount: 2,
+          crossAxisSpacing: 2.0,
+          mainAxisSpacing: 2.0,
+          childAspectRatio: 0.76,
         ),
         itemBuilder: (BuildContext context, int index) {
           return ProductItem(product: favoriteManager.favProducts[index], index: index,);

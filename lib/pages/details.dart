@@ -24,7 +24,7 @@ class _ProductPageState extends State<ProductPage> {
     final productManager = Provider.of<ProductManager>(context);
 
     return Scaffold(
-      backgroundColor: Colors.white, // Фон всего экрана
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(widget.product.productTitle),
         actions: <Widget>[
@@ -137,11 +137,11 @@ class _ProductPageState extends State<ProductPage> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.white, // Фон нижней панели
+        color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.only(bottom: 0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.end, // Выравнивание по правому краю
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               ElevatedButton(
                 onPressed: () {
@@ -164,7 +164,7 @@ class _ProductPageState extends State<ProductPage> {
                   ),
                 ),
               ),
-              const SizedBox(width: 16), // Отступ справа (если нужно)
+              const SizedBox(width: 16),
             ],
           ),
         ),

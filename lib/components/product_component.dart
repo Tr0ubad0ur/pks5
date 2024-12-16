@@ -57,13 +57,13 @@ class _ProductItemState extends State<ProductItem> {
                       borderRadius: BorderRadius.circular(16.0),
                       child: Image.network(
                         widget.product.productImage,
-                        height: 180, // Уменьшенная высота изображения
-                        width: 180, // Уменьшенная ширина изображения
+                        height: 180,
+                        width: 180,
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                  // Поменяли местами цену и название
+
                   Center(
                     child: Text(
                       widget.product.productName,

@@ -22,7 +22,6 @@ class _EditProductPageState extends State<EditProductPage> {
   @override
   void initState() {
     super.initState();
-    // Заполняем контроллеры данными из текущего продукта
     productTitleController.text = widget.product.productTitle;
     productImageController.text = widget.product.productImage;
     productPriceController.text = widget.product.productPrice.toString();
@@ -49,19 +48,19 @@ class _EditProductPageState extends State<EditProductPage> {
 
     if (productTitle.isNotEmpty && productImage.isNotEmpty && productPrice > 0 && productAbout.isNotEmpty && productSpecifications.isNotEmpty) {
       final updatedProduct = Product(
-        productId: widget.product.productId, // ID остается прежним
+        productId: widget.product.productId,
         productTitle: productTitle,
         productImage: productImage,
-        productName: productTitle, // Предположим, что название и имя совпадают
+        productName: productTitle,
         productPrice: productPrice,
         productAbout: productAbout,
         productSpecifications: productSpecifications,
       );
 
       final productManager = Provider.of<ProductManager>(context, listen: false);
-      await productManager.updateProduct(widget.product.productId, updatedProduct); // Обновляем продукт через API
+      await productManager.updateProduct(widget.product.productId, updatedProduct);
 
-      Navigator.pop(context); // Возвращаемся на предыдущую страницу
+      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -143,7 +142,7 @@ class _EditProductPageState extends State<EditProductPage> {
               ),
               const SizedBox(height: 16),
 
-              // Кнопка для сохранения изменений
+
               ElevatedButton(
                 onPressed: () => _updateProduct(context),
                 child: const Text("Сохранить изменения",
