@@ -51,4 +51,17 @@ class CartManager with ChangeNotifier{
   bool isInCart(Product product){
     return _cartProducts.contains(product);
   }
+
+  double getTotalPrice() {
+    return _cartProducts.fold(0, (sum, product) {
+      return sum + (product.productPrice * product.quantity);
+    });
+  }
+  void updateQuantity(Product product, int newQuantity) {
+    final index = _cartProducts.indexWhere((p) => p.productId == product.productId);
+    if (index != -1) {
+      _cartProducts[index].quantity = newQuantity;
+      notifyListeners();
+    }
+  }
 }

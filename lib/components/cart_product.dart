@@ -14,17 +14,18 @@ class CartProduct extends StatefulWidget {
 }
 
 class _CartProductState extends State<CartProduct> {
-
   @override
   Widget build(BuildContext context) {
     final cartManager = Provider.of<CartManager>(context);
+
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ProductPage(product: widget.product,)),
+        MaterialPageRoute(builder: (context) => ProductPage(product: widget.product)),
       ),
       child: Stack(
-          children: [Row(
+        children: [
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
@@ -54,7 +55,7 @@ class _CartProductState extends State<CartProduct> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '\₽${widget.product.productPrice.toStringAsFixed(2)}',
+                        '\₽${(widget.product.productPrice * widget.product.quantity).toStringAsFixed(2)}',
                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -63,44 +64,50 @@ class _CartProductState extends State<CartProduct> {
               ),
             ],
           ),
-            Positioned(
-              bottom: 0,
-              left: 165,
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.remove),
-                    onPressed: () {
-                      setState(() {
-                        if (widget.product.quantity > 1) {
-                          widget.product.quantity--;
-                        } else{
-                          cartManager.removeFromCart(widget.product, context);
-                          widget.product.quantity = 0;
-                        }
-                      });
-                    },
-                  ),
-                  Text(
-                      "${widget.product.quantity}"
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () {
-                      setState(() {
-                        widget.product.quantity++;
-                      });
-                    },
-                  ),
-                ],
-              ),
+          // Кнопки для изменения количества товара
+          Positioned(
+            bottom: 0,
+            left: 165,
+            child: Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.remove),
+                  onPressed: () {
+                    setState(() {
+                      if (widget.product.quantity > 1) {
+                        widget.product.quantity--;
+                        cartManager.updateQuantity(widget.product, widget.product.quantity);
+                      } else {
+                        cartManager.removeFromCart(widget.product, context);
+                      }
+                    });
+                  },
+                ),
+                Text("${widget.product.quantity}"),
+                IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () {
+                    setState(() {
+                      widget.product.quantity++;
+                      cartManager.updateQuantity(widget.product, widget.product.quantity);
+                    });
+                  },
+                ),
+              ],
             ),
-            Positioned(
-              bottom: 0,
-              left: 300,
-              child: IconButton(onPressed:(){cartManager.removeFromCart(widget.product, context);}, icon: Icon(Icons.delete_outline)),
+          ),
+          // Кнопка для удаления товара из корзины
+          Positioned(
+            bottom: 0,
+            left: 300,
+            child: IconButton(
+              onPressed: () {
+                cartManager.removeFromCart(widget.product, context);
+              },
+              icon: Icon(Icons.delete_outline),
             ),
-          ]
+          ),
+        ],
       ),
     );
   }
