@@ -25,7 +25,7 @@ class CartManager with ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.amberAccent,
+          backgroundColor: const Color.fromRGBO(161, 13, 1, 1),
           title: const Text('Подтверждение удаления'),
           content: const Text('Вы уверены, что хотите удалить этот товар?'),
           actions: <Widget>[

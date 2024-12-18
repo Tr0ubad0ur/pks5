@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:pr3/api/supbase.dart';
+import 'package:pr3/pages/authPage.dart';
+
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -8,8 +12,30 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+
+  String? _userEmail;
+
+  @override
+  void initState() {
+    super.initState();
+        _loadUserEmail();
+  }
+
+  Future<void> _loadUserEmail() async {
+    final supabase = SupabaseService().client;
+    final session = supabase.auth.currentSession;
+
+    if (session != null && session.user != null) {
+      setState(() {
+        _userEmail = session.user!.email;
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    final supabase = SupabaseService().client;
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -22,33 +48,44 @@ class _ProfileState extends State<Profile> {
             ),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await supabase.auth.signOut(); // Используем supabase для выхода
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => const AuthPage()),
+              );
+            },
+          ),
+        ],
         backgroundColor: const Color.fromRGBO(161, 13, 1, 1),
       ),
-      body: const Center(
+      body: Center(
         child: Padding(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 50,
                 backgroundImage: AssetImage(''),
-                  backgroundColor: const Color.fromRGBO(161, 13, 1, 1)
+                  backgroundColor: Color.fromRGBO(161, 13, 1, 1)
               ),
-              SizedBox(height: 16),
-              Text(
+              const SizedBox(height: 16),
+              const Text(
                 'Вишняков Матвей',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8),
-              Text(
+              const SizedBox(height: 8),
+              const Text(
                 'Телефон: +7 (985) 074-55-55',
                 style: TextStyle(fontSize: 16),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
-                'Email: matvey2004@gmail.com',
-                style: TextStyle(fontSize: 16),
+                'Email: ${_userEmail ?? 'Загрузка...'}',
+                style: const TextStyle(fontSize: 16),
               ),
             ],
           ),

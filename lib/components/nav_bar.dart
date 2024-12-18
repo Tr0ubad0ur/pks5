@@ -7,6 +7,7 @@ import 'package:pr3/pages/cart.dart';
 import 'package:pr3/models/cartManager.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:pr3/pages/authPage.dart';
 
 class BNavBar extends StatefulWidget {
   const BNavBar({super.key});
