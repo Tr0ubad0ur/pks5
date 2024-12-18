@@ -4,11 +4,11 @@ import 'package:pr3/api/api.dart';
 
 class ProductManager with ChangeNotifier {
   final ApiService _apiService = ApiService();
-  List<Product> _products = [];
+  List<Product> _products = []; // Локальный массив для хранения продуктов
 
   List<Product> get products => _products;
 
-
+  // Метод для загрузки продуктов с сервера
   Future<void> fetchProducts() async {
     try {
       _products = await _apiService.getProducts();
@@ -18,7 +18,7 @@ class ProductManager with ChangeNotifier {
     }
   }
 
-
+  // Метод для добавления продукта через API
   Future<void> addProduct(Product product) async {
     try {
       final newProduct = await _apiService.createProduct(product);
@@ -29,7 +29,7 @@ class ProductManager with ChangeNotifier {
     }
   }
 
-
+  // Метод для удаления продукта через API
   Future<void> removeProduct(int productId) async {
     try {
       await _apiService.deleteProduct(productId);
@@ -40,7 +40,7 @@ class ProductManager with ChangeNotifier {
     }
   }
 
-
+  // Метод для обновления продукта через API
   Future<void> updateProduct(int productId, Product updatedProduct) async {
     try {
       final updated = await _apiService.updateProduct(productId, updatedProduct);
