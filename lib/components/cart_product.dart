@@ -3,6 +3,8 @@ import 'package:pr3/models/product.dart';
 import 'package:pr3/models/cartManager.dart';
 import 'package:provider/provider.dart';
 import 'package:pr3/pages/details.dart';
+import 'package:pr3/pages/details.dart';
+import 'package:pr3/api/api.dart';
 
 class CartProduct extends StatefulWidget {
   final Product product;
