@@ -53,7 +53,7 @@ class CartManager with ChangeNotifier{
   }
 
   double getTotalPrice() {
-    return _cartProducts.fold(0, (sum, product) {
+    return _cartProducts.fold(0,(sum, product) {
       return sum + (product.productPrice * product.quantity);
     });
   }

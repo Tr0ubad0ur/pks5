@@ -3,7 +3,6 @@ import 'package:pr3/models/product.dart';
 import 'package:pr3/models/cartManager.dart';
 import 'package:provider/provider.dart';
 import 'package:pr3/pages/details.dart';
-import 'package:pr3/pages/details.dart';
 import 'package:pr3/api/api.dart';
 
 class CartProduct extends StatefulWidget {
@@ -16,6 +15,8 @@ class CartProduct extends StatefulWidget {
 }
 
 class _CartProductState extends State<CartProduct> {
+  final ApiService _apiService = ApiService();
+
   @override
   Widget build(BuildContext context) {
     final cartManager = Provider.of<CartManager>(context);
@@ -36,8 +37,8 @@ class _CartProductState extends State<CartProduct> {
                   borderRadius: BorderRadius.circular(16.0),
                   child: Image.network(
                     widget.product.productImage,
-                    height: 140,
-                    width: 140,
+                    height: 140, // Уменьшенная высота изображения
+                    width: 140, // Уменьшенная ширина изображения
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -57,7 +58,7 @@ class _CartProductState extends State<CartProduct> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        '\₽${(widget.product.productPrice * widget.product.quantity).toStringAsFixed(2)}',
+                        '\₽${widget.product.productPrice.toStringAsFixed(2)}',
                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -66,47 +67,46 @@ class _CartProductState extends State<CartProduct> {
               ),
             ],
           ),
-          // Кнопки для изменения количества товара
           Positioned(
             bottom: 0,
             left: 165,
-            child: Row(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.remove),
-                  onPressed: () {
-                    setState(() {
-                      if (widget.product.quantity > 1) {
-                        widget.product.quantity--;
-                        cartManager.updateQuantity(widget.product, widget.product.quantity);
-                      } else {
-                        cartManager.removeFromCart(widget.product, context);
-                      }
-                    });
-                  },
-                ),
-                Text("${widget.product.quantity}"),
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    setState(() {
-                      widget.product.quantity++;
-                      cartManager.updateQuantity(widget.product, widget.product.quantity);
-                    });
-                  },
-                ),
-              ],
-            ),
-          ),
-          // Кнопка для удаления товара из корзины
-          Positioned(
-            bottom: 0,
-            left: 300,
             child: IconButton(
               onPressed: () {
                 cartManager.removeFromCart(widget.product, context);
               },
-              icon: Icon(Icons.delete_outline),
+              icon: const Icon(Icons.delete_outline),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 230,
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.remove),
+                  onPressed: () async {
+                    setState(() {
+                      if (widget.product.quantity > 1) {
+                        widget.product.quantity--;
+                      } else {
+                        cartManager.removeFromCart(widget.product, context);
+                        widget.product.quantity = 0;
+                      }
+                    });
+                    await _apiService.updateProductQuantity(widget.product.productId, widget.product.quantity);
+                  },
+                ),
+                Text("${widget.product.quantity}"),
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () async {
+                    setState(() {
+                      widget.product.quantity++;
+                    });
+                    await _apiService.updateProductQuantity(widget.product.productId, widget.product.quantity);
+                  },
+                ),
+              ],
             ),
           ),
         ],
