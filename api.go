@@ -7,36 +7,129 @@ import (
 	"strconv"
 )
 
-// Product представляет продукт
+
 type Product struct {
-	ID             int
-	Title          string
-	ImageURL       string
-	Name           string
-	Price          float64
-	Description    string
+	ID          int
+	Title       string
+	ImageURL    string
+	Name        string
+	Price       int
+	Description string
 	Specifications string
-	Quantity       int
+	Quantity    int
+	IsFavorite     bool
+    InCart         bool
 }
 
-// Пример списка продуктов
 var products = []Product{
-	{ID: 1, Title: "RTX 4060Ti Windforce OC 8G", ImageURL: "https://cdn1.ozone.ru/s3/multimedia-e/6660780194.jpg", Name: "RTX 4060Ti Windforce OC 8G", Price: 41540, Description: "Видеокарта Gigabyte RTX4060 WINDFORCE OC 8GB GDDR6 128-bit DPx2 HDMIx2 2FAN RTL Прогрессивная микроархитектура Ada Lovelace, фирменная технология NVIDIA DLSS 3 и полноценная реализация трасировки лучей Тензорные ядра 4-поколения: прирост производительности с DLSS 3 до 4x (по сравнению с типовой процедурой рендеринга сцены) RT-ядра 3-поколения: 2-кратный прирост производительности на операциях трассировки лучей Графический процессор GeForce RTX 4060 ВидеоОЗУ GDDR6 8 Гбайт, 128-разрядная шина памяти Система охлаждения WINDFORCE Защитная пластина на тыльной стороне печатной платы.", Specifications: "1", Quantity: 0},
-	{ID: 2, Title: "RTX 4070 EAGLE OC 12G", ImageURL: "https://cdn1.ozone.ru/s3/multimedia-1-f/7036023075.jpg", Name: "RTX 4070 EAGLE OC 12G", Price: 84480, Description: "Видеокарта GIGABYTE GeForce RTX 4070 Ti EAGLE OC 12GB - это продукт от известного производителя GIGABYTE, который зарекомендовал себя на рынке компьютерной техники. Видеокарта оснащена видеопроцессором NVIDIA GeForce RTX 4070 Ti, который обеспечивает высокую производительность и реалистичное изображение. Техпроцесс составляет 4 нм, что гарантирует высокую скорость обработки данных и низкое энергопотребление. Объем видеопамяти составляет 12 ГБ, что позволяет работать с тяжелыми графическими приложениями и играми. Тип памяти GDDR6X обеспечивает высокую скорость передачи данных и стабильность работы.", Specifications: "1", Quantity: 0},
-	{ID: 3, Title: "RTX 4090 Windforce 24G", ImageURL: "https://avatars.mds.yandex.net/get-mpic/10229228/2a00000190e682a74ff9549f8bf50a7612b6/orig", Name: "RTX 4090 Windforce 24G", Price: 304920, Description: "Видеокарта GIGABYTE GeForce RTX 4090 WINDFORCE V2 [GV-N4090WF3V2-24GD] на основе архитектуры NVIDIA Ada Lovelace обеспечивает высокую графическую производительность для работы с программами и запуска игр на ПК. Процессор функционирует с частотой 2230 МГц, которая способна повышаться до значения 2520 МГц в режиме разгона. Видеокарта оснащена 24 ГБ памяти стандарта GDDR6X с пропускной способностью 1008 Гбайт/сек, что обеспечивает быстродействие обработки графических данных.", Specifications: "1", Quantity: 0},
-	{ID: 4, Title: "Видеокарта Gigabyte Radeon RX 7600 GAMING OC 8G", ImageURL: "https://avatars.mds.yandex.net/get-mpic/11225627/2a0000018af87c2c8e082045cc24dd2cdac3/180x240", Name: "Видеокарта Gigabyte Radeon RX 7600 GAMING OC 8G", Price: 33227, Description: "Бренд: GIGABYTE Тип поставки: Ret Количество вентиляторов: 3 Цвет: черный Для геймеров: ДА PartNumber/Артикул Производителя: GV-R76GAMING OC-8GD Тип: Видеокарта Длина упаковки (ед): 0.41", Specifications: "Бренд: GIGABYTE Тип поставки: Ret Количество вентиляторов: 3 Цвет: черный Для геймеров: ДА PartNumber/Артикул Производителя: GV-R76GAMING OC-8GD Тип: Видеокарта Длина упаковки (ед): 0.41", Quantity: 0},
-	{ID: 5, Title: "Видеокарта Acer RX7700XT NITRO OC 12GB GDDR6 192bit 3xDP HDMI 2FAN RTL", ImageURL: "https://avatars.mds.yandex.net/get-mpic/5245452/2a00000192b631bf90280871d2e4c4d9695b/74x100", Name: "Видеокарта Acer RX7700XT NITRO OC 12GB GDDR6 192bit 3xDP HDMI 2FAN RTL", Price: 47767, Description: "Эта видеокарта может обеспечить высокую производительность в современных играх и других графических приложениях. Она имеет достаточный объём видеопамяти и широкий интерфейс для подключения нескольких мониторов одновременно. Охлаждение с помощью двух вентиляторов обеспечивает стабильную работу при высоких нагрузках.", Specifications: "* **Графический процессор:** AMD Radeon RX 7700 XT. * **Объём видеопамяти:** 12 ГБ GDDR6. * **Ширина шины памяти:** 192 бита.", Quantity: 0},
+	{
+		ID:          1,
+		Title:       "Электрогитара FENDER",
+		ImageURL:    "https://www.muztorg.ru/files/egx/po4/bqz/808/k0c/48w/so0/8w4/w/egxpo4bqz808k0c48wso08w4w.jpeg",
+		Name:        "Электрогитара FENDER",
+		Price:       47000,
+		Description: "Электрогитара FENDER SQUIER Affinity 2021 Telecaster MN Butterscotch Blonde",
+		Specifications: "Количество ладов (диапазон): 21\nКоличество струн: 6\nКонфигурация звукоснимателей: S-s\nКрепление грифа: на болтах\nМатериал грифа: клён\nМатериал корпуса: тополь\nОриентация: правосторонняя\nФорма корпуса: Telecaster\nМензура, дюймы: 25.5\nТип электроники: пассивная",
+		Quantity:    0,
+	},
+	{
+		ID:          2,
+		Title:       "Электрогитара GRETSCH",
+		ImageURL:    "https://wellplayedgear.com/cdn/shop/files/products_2FWPG-2508300526-CYGC21120649_2FWPG-2508300526-CYGC21120649_1708505823320.jpg?v=1708505838&width=2048",
+		Name:        "Электрогитара GRETSCH",
+		Price:       111600,
+		Description: "Электрогитара GRETSCH G5622 Electromatic Double-Cut Bristol Fog",
+		Specifications: "Количество ладов (диапазон): 22\nКоличество струн: 6\nКонфигурация звукоснимателей: H-h\nКрепление грифа: вклеенный\nМатериал грифа: клён\nМатериал корпуса: клён\nМатериал накладки грифа: лавр\nОриентация: правосторонняя\nФорма корпуса: другая форма\nМензура, дюймы: 24.6",
+		Quantity:    0,
+	},
+	{
+		ID:          3,
+		Title:       "Электрогитара FENDER",
+		ImageURL:    "https://images.musicstore.de/images/0960/fender-vintera-ii-50s-stratocaster-mn-2-color-sunburst_1_GIT0060562-000.jpg",
+		Name:        "Электрогитара FENDER",
+		Price:       35000,
+		Description: "Электрогитара FENDER PLAYER Stratocaster MN 3-Tone Sunburst",
+		Specifications: "Количество ладов (диапазон): 22\nКоличество струн: 6\nКонфигурация звукоснимателей: S-s-s\nКрепление грифа: на болтах\nМатериал грифа: клён\nМатериал корпуса: ольха\nМатериал накладки грифа: клён\nМатериал топа: ольха\nОриентация: правосторонняя\nФорма корпуса: Stratocaster",
+		Quantity:    0,
+	},
+	{
+		ID:          4,
+		Title:       "Электрогитара GIBSON",
+		ImageURL:    "https://images.musicstore.de/images/1280/gibson-les-paul-standard-50s-faded-vintage-tobacco-burst_1_GIT0062247-002.jpg",
+		Name:        "Электрогитара GIBSON",
+		Price:       579000,
+		Description: "Электрогитара GIBSON Les Paul Standard 50s Tobacco Burst",
+		Specifications: "Количество струн: 6\nКрепление грифа: вклеенный\nМатериал грифа: красное дерево\nМатериал корпуса: красное дерево\nМатериал накладки грифа: палисандр\nМатериал топа: клён\nОриентация: правосторонняя\nФорма корпуса: Les paul\nМензура, дюймы: 24.75\nТип бриджа: Tune-o-matic",
+		Quantity:    0,
+	},
+	{
+		ID:          5,
+		Title:       "Бас-гитара IBANEZ",
+		ImageURL:    "https://www.pult.ru/upload/iblock/307/3072adb6323ced14adfa00f0d1d926f1.jpg",
+		Name:        "Бас-гитара IBANEZ",
+		Price:       53000,
+		Description: "Бас-гитара IBANEZ SR300EB-WK",
+		Specifications: "Количество ладов (диапазон): 24\nКоличество струн: 4\nКонфигурация звукоснимателей: H-h\nКрепление грифа: на болтах\nМатериал грифа: клён\nМатериал корпуса: ньятон\nМатериал накладки грифа: ятоба\nОриентация: правосторонняя\nМензура, дюймы: 34\nТип бриджа: фиксированный",
+		Quantity:    0,
+	},
+	{
+		ID:          6,
+		Title:       "Электрогитара EPIPHONE",
+		ImageURL:    "https://impult.ru/preview/r/456x456/upload/iblock/7e7/dliobpyfyvd0a1527p5yumvnq0zevya8.jpg",
+		Name:        "Электрогитара EPIPHONE",
+		Price:       184000,
+		Description: "Электрогитара EPIPHONE 1961 Les Paul SG Standard Aged 60s Cherry",
+		Specifications: "",
+		Quantity:    0,
+	},
+	{
+		ID:          7,
+		Title:       "Электрогитара MOOER",
+		ImageURL:    "https://main-cdn.sbermegamarket.ru/hlr-system/109/411/165/372/022/26/600012842365b0.jpeg",
+		Name:        "Электрогитара MOOER",
+		Price:       56000,
+		Description: "Электрогитара MOOER GTRS S800 blue",
+		Specifications: "",
+		Quantity:    0,
+	},
+	{
+		ID:          8,
+		Title:       "Акустическая гитара YAMAHA",
+		ImageURL:    "https://ru.yamaha.com/ru/files/252CDAC3C7DF40FEB7CABB9AAAFE3913_12073_6478a866ebd8701062e22a07c9b458b9.jpg?impolicy=resize&imwid=735&imhei=735",
+		Name:        "Акустическая гитара",
+		Price:       131990,
+		Description: "Акустическая гитара YAMAHA FG850 NATURAL",
+		Specifications: "",
+		Quantity:    0,
+	},
+	{
+		ID:          9,
+		Title:       "Классическая гитара YAMAHA",
+		ImageURL:    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNdqfF0TZ-kG7II2Clh5UrEQO2YlyQIqBa4w&s",
+		Name:        "Классическая гитара",
+		Price:       151990,
+		Description: "Классическая гитара YAMAHA SLG200N TRANSLUCENT BLACK",
+		Specifications: "Количество струн: 6\nМатериал грифа: красное дерево\nМатериал накладки грифа: палисандр\nОриентация: правосторонняя\nТип классической гитары: со звукоснимателем",
+		Quantity:    0,
+	},
+	{
+		ID:          10,
+		Title:       "Гитара 12 струн TAKAMINE",
+		ImageURL:    "https://images.musicstore.de/images/0320/takamine-gd30ce12-natural_1_GIT0043210-000.jpg",
+		Name:        "Гитара 12 струн",
+		Price:       70000,
+		Description: "Акустическая гитара 12 струн TAKAMINE G70 SERIES GJ72CE-12NAT",
+		Specifications: "Количество ладов (диапазон): 21\nКоличество струн: 12\nМатериал грифа: клён\nМатериал корпуса: клён\nМатериал накладки грифа: лавр\nОриентация: правосторонняя\nФорма корпуса: Jumbo\nМензура, дюймы: 25.5\nТип акустической гитары: со звукоснимателем\nМатериал верхней деки: ель",
+		Quantity:    0,
+	},
 }
 
-// обработчик для GET-запроса, возвращает список продуктов
+
 func getProductsHandler(w http.ResponseWriter, r *http.Request) {
-	// Устанавливаем заголовки для правильного формата JSON
 	w.Header().Set("Content-Type", "application/json")
-	// Преобразуем список заметок в JSON
 	json.NewEncoder(w).Encode(products)
 }
 
-// обработчик для POST-запроса, добавляет продукт
 func createProductHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
@@ -66,10 +159,7 @@ func createProductHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newProduct)
 }
 
-//Добавление маршрута для получения одного продукта
-
 func getProductByIDHandler(w http.ResponseWriter, r *http.Request) {
-	// Получаем ID из URL
 	idStr := r.URL.Path[len("/Products/"):]
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -77,7 +167,6 @@ func getProductByIDHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Ищем продукт с данным ID
 	for _, Product := range products {
 		if Product.ID == id {
 			w.Header().Set("Content-Type", "application/json")
@@ -86,18 +175,15 @@ func getProductByIDHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Если продукт не найден
 	http.Error(w, "Product not found", http.StatusNotFound)
 }
 
-// удаление продукта по id
 func deleteProductHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// Получаем ID из URL
 	idStr := r.URL.Path[len("/Products/delete/"):]
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -105,28 +191,26 @@ func deleteProductHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Ищем и удаляем продукт с данным ID
 	for i, Product := range products {
 		if Product.ID == id {
-			// Удаляем продукт из среза
 			products = append(products[:i], products[i+1:]...)
-			w.WriteHeader(http.StatusNoContent) // Успешное удаление, нет содержимого
+			w.WriteHeader(http.StatusNoContent)
 			return
 		}
 	}
 
-	// Если продукт не найден
+
 	http.Error(w, "Product not found", http.StatusNotFound)
 }
 
-// Обновление продукта по id
+
 func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// Получаем ID из URL
+
 	idStr := r.URL.Path[len("/Products/update/"):]
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -134,7 +218,7 @@ func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Декодируем обновлённые данные продукта
+
 	var updatedProduct Product
 	err = json.NewDecoder(r.Body).Decode(&updatedProduct)
 	if err != nil {
@@ -142,7 +226,7 @@ func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Ищем продукт для обновления
+
 	for i, Product := range products {
 		if Product.ID == id {
 
@@ -160,16 +244,116 @@ func updateProductHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Если продукт не найден
+
+	http.Error(w, "Product not found", http.StatusNotFound)
+}
+
+func updateProductQuantityHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPut {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+
+	idStr := r.URL.Path[len("/products/quantity/"):]
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid Product ID", http.StatusBadRequest)
+		return
+	}
+
+
+	var updatedQuantity struct {
+		Quantity int `json:"quantity"`
+	}
+	err = json.NewDecoder(r.Body).Decode(&updatedQuantity)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+
+	for i, product := range products {
+		if product.ID == id {
+			products[i].Quantity = updatedQuantity.Quantity
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(products[i])
+			return
+		}
+	}
+
+
+	http.Error(w, "Product not found", http.StatusNotFound)
+}
+
+
+func toggleFavoriteHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+
+	idStr := r.URL.Path[len("/products/favorite/"):]
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid Product ID", http.StatusBadRequest)
+		return
+	}
+
+
+	for i, product := range products {
+		if product.ID == id {
+
+			products[i].IsFavorite = !products[i].IsFavorite
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(products[i])
+			return
+		}
+	}
+
+
+	http.Error(w, "Product not found", http.StatusNotFound)
+}
+
+
+func toggleCartHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+
+	idStr := r.URL.Path[len("/products/cart/"):]
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid Product ID", http.StatusBadRequest)
+		return
+	}
+
+
+	for i, product := range products {
+		if product.ID == id {
+			products[i].InCart = !products[i].InCart
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(products[i])
+			return
+		}
+	}
+
+
 	http.Error(w, "Product not found", http.StatusNotFound)
 }
 
 func main() {
-	http.HandleFunc("/products", getProductsHandler)           // Получить все продукты
-	http.HandleFunc("/products/create", createProductHandler)  // Создать продукт
-	http.HandleFunc("/products/", getProductByIDHandler)       // Получить продукт по ID
-	http.HandleFunc("/products/update/", updateProductHandler) // Обновить продукт
-	http.HandleFunc("/products/delete/", deleteProductHandler) // Удалить продукт
+	http.HandleFunc("/products", getProductsHandler)                     // Получить все продукты
+	http.HandleFunc("/products/create", createProductHandler)            // Создать продукт
+	http.HandleFunc("/products/", getProductByIDHandler)                 // Получить продукт по ID
+	http.HandleFunc("/products/update/", updateProductHandler)           // Обновить продукт
+	http.HandleFunc("/products/delete/", deleteProductHandler)           // Удалить продукт
+	http.HandleFunc("/products/quantity/", updateProductQuantityHandler) // Обновить количество товара
+	http.HandleFunc("/products/favorite/", toggleFavoriteHandler)        // Добавить/удалить из избранного
+	http.HandleFunc("/products/cart/", toggleCartHandler)                // Добавить/удалить из корзины
 
 	fmt.Println("Server is running on http://localhost:8080 !")
 	http.ListenAndServe(":8080", nil)
